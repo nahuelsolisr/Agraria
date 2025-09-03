@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Actividades - Sistema Agraria</title>
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/layout.css">
+    <link rel="stylesheet" href="assets/css/forms.css">
+    <link rel="stylesheet" href="assets/css/tables.css">
+    <link rel="stylesheet" href="assets/css/utilities.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <img src="assets/images/logo.svg" alt="Sistema Agraria" class="logo">
+                <span class="logo-text">Sistema Agraria</span>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v3H8V5z"></path>
+                        </svg>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="usuarios.html" class="nav-link" id="adminOnlyNav" style="display: none;">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                        </svg>
+                        Usuarios
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="entornos.html" class="nav-link">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                        Entornos de Formación
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="actividades.html" class="nav-link">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Registro de Actividades
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="consulta-actividades.html" class="nav-link active">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        Consulta de Actividades
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="ventas.html" class="nav-link">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                        </svg>
+                        Registro de Ventas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="consulta-ventas.html" class="nav-link">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        Consulta de Ventas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="inventario.html" class="nav-link">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                        Inventario
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <h1 class="page-title">Consulta de Actividades</h1>
+            </div>
+            
+            <div class="header-right">
+                <div class="user-menu">
+                    <div class="user-info">
+                        <div class="user-avatar" id="userInitials">U</div>
+                        <div class="user-details">
+                            <span class="user-name" id="currentUserName">Usuario</span>
+                            <span class="user-role" id="currentUserRole">Rol</span>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="dropdown-toggle" type="button">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="#" class="dropdown-item" id="logoutBtn">Cerrar Sesión</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Filters Section -->
+            <div class="card mb-6">
+                <div class="card-header">
+                    <h3 class="card-title">Filtros de Búsqueda</h3>
+                </div>
+                <div class="card-body">
+                    <form id="filterForm" class="form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="filterEnvironment" class="form-label">Entorno</label>
+                                <select id="filterEnvironment" name="filterEnvironment" class="form-control">
+                                    <option value="">Todos los entornos</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="filterType" class="form-label">Tipo</label>
+                                <select id="filterType" name="filterType" class="form-control">
+                                    <option value="">Todos los tipos</option>
+                                    <option value="animal">Animal</option>
+                                    <option value="vegetal">Vegetal</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="filterTeacher" class="form-label">Profesor</label>
+                                <select id="filterTeacher" name="filterTeacher" class="form-control">
+                                    <option value="">Todos los profesores</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="filterYear" class="form-label">Año</label>
+                                <select id="filterYear" name="filterYear" class="form-control">
+                                    <option value="">Todos los años</option>
+                                    <option value="1">1° Año</option>
+                                    <option value="2">2° Año</option>
+                                    <option value="3">3° Año</option>
+                                    <option value="4">4° Año</option>
+                                    <option value="5">5° Año</option>
+                                    <option value="6">6° Año</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="filterDivision" class="form-label">División</label>
+                                <select id="filterDivision" name="filterDivision" class="form-control">
+                                    <option value="">Todas las divisiones</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="filterGroup" class="form-label">Grupo</label>
+                                <input type="text" id="filterGroup" name="filterGroup" class="form-control" placeholder="Ej: Grupo 1">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="filterDateFrom" class="form-label">Fecha Desde</label>
+                                <input type="date" id="filterDateFrom" name="filterDateFrom" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="filterDateTo" class="form-label">Fecha Hasta</label>
+                                <input type="date" id="filterDateTo" name="filterDateTo" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="filterTitle" class="form-label">Título de Actividad</label>
+                                <input type="text" id="filterTitle" name="filterTitle" class="form-control" placeholder="Buscar en título...">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="filterDescription" class="form-label">Descripción</label>
+                                <input type="text" id="filterDescription" name="filterDescription" class="form-control" placeholder="Buscar en descripción...">
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                                Buscar
+                            </button>
+                            <button type="button" id="clearFiltersBtn" class="btn btn-secondary">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                </svg>
+                                Limpiar Filtros
+                            </button>
+                            <button type="button" id="exportBtn" class="btn btn-success">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Exportar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Resultados de la Búsqueda</h3>
+                    <div class="card-actions">
+                        <span id="resultsCount" class="text-sm text-secondary">0 actividades encontradas</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="resultsTableContainer">
+                        <p class="text-center text-secondary">Utilice los filtros para buscar actividades</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Activity Detail Modal -->
+    <div id="activityDetailModal" class="modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Detalle de Actividad</h4>
+                    <button type="button" class="modal-close">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="activityDetailContent">
+                        <!-- Activity details will be populated here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary modal-close">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/activity-query.js"></script>
+</body>
+</html>

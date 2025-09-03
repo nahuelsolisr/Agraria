@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Ventas - Sistema Agraria</title>
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/layout.css">
+    <link rel="stylesheet" href="assets/css/forms.css">
+    <link rel="stylesheet" href="assets/css/tables.css">
+    <link rel="stylesheet" href="assets/css/utilities.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <img src="assets/images/logo.svg" alt="Sistema Agraria" class="logo">
+                <span class="logo-text">Sistema Agraria</span>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v3H8V5z"></path>
+                        </svg>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="usuarios.html" class="nav-link" id="adminOnlyNav" style="display: none;">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                        </svg>
+                        Usuarios
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="entornos.html" class="nav-link">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                        Entornos de Formación
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="actividades.html" class="nav-link">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Registro de Actividades
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="consulta-actividades.html" class="nav-link">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        Consulta de Actividades
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="ventas.html" class="nav-link active">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                        </svg>
+                        Registro de Ventas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="consulta-ventas.html" class="nav-link">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        Consulta de Ventas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="inventario.html" class="nav-link">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                        Inventario
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <h1 class="page-title">Registro de Ventas</h1>
+            </div>
+            
+            <div class="header-right">
+                <div class="user-menu">
+                    <div class="user-info">
+                        <div class="user-avatar" id="userInitials">U</div>
+                        <div class="user-details">
+                            <span class="user-name" id="currentUserName">Usuario</span>
+                            <span class="user-role" id="currentUserRole">Rol</span>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="dropdown-toggle" type="button">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="#" class="dropdown-item" id="logoutBtn">Cerrar Sesión</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Sale Form -->
+            <div class="card mb-6">
+                <div class="card-header">
+                    <h3 class="card-title">Nueva Venta</h3>
+                </div>
+                <div class="card-body">
+                    <form id="saleForm" class="form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="saleDate" class="form-label">Fecha de Venta <span class="text-danger">*</span></label>
+                                <input type="date" id="saleDate" name="saleDate" class="form-control" required>
+                                <div id="saleDateError" class="error-message"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="customerName" class="form-label">Cliente <span class="text-danger">*</span></label>
+                                <input type="text" id="customerName" name="customerName" class="form-control" placeholder="Nombre del cliente" required>
+                                <div id="customerNameError" class="error-message"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="customerPhone" class="form-label">Teléfono</label>
+                                <input type="tel" id="customerPhone" name="customerPhone" class="form-control" placeholder="Teléfono del cliente">
+                                <div id="customerPhoneError" class="error-message"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="paymentMethod" class="form-label">Método de Pago <span class="text-danger">*</span></label>
+                                <select id="paymentMethod" name="paymentMethod" class="form-control" required>
+                                    <option value="">Seleccione método de pago</option>
+                                    <option value="efectivo">Efectivo</option>
+                                    <option value="tarjeta">Tarjeta</option>
+                                    <option value="transferencia">Transferencia</option>
+                                    <option value="cheque">Cheque</option>
+                                </select>
+                                <div id="paymentMethodError" class="error-message"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section mt-6">
+                            <h4 class="form-section-title">Productos</h4>
+                            
+                            <div class="product-selector mb-4">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="productSelect" class="form-label">Producto</label>
+                                        <select id="productSelect" class="form-control">
+                                            <option value="">Seleccione un producto</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="productQuantity" class="form-label">Cantidad</label>
+                                        <input type="number" id="productQuantity" class="form-control" min="1" step="0.01" placeholder="0">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="productPrice" class="form-label">Precio Unitario</label>
+                                        <input type="number" id="productPrice" class="form-control" min="0" step="0.01" placeholder="0.00">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">&nbsp;</label>
+                                        <button type="button" id="addProductBtn" class="btn btn-primary">
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                            </svg>
+                                            Agregar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="productsTableContainer">
+                                <p class="text-center text-secondary">No hay productos agregados</p>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section mt-6">
+                            <div class="sale-summary">
+                                <div class="summary-row">
+                                    <span class="summary-label">Subtotal:</span>
+                                    <span class="summary-value" id="subtotalAmount">$0.00</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span class="summary-label">IVA (21%):</span>
+                                    <span class="summary-value" id="taxAmount">$0.00</span>
+                                </div>
+                                <div class="summary-row total-row">
+                                    <span class="summary-label">Total:</span>
+                                    <span class="summary-value" id="totalAmount">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions mt-6">
+                            <button type="submit" class="btn btn-success">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Registrar Venta
+                            </button>
+                            <button type="button" id="clearSaleBtn" class="btn btn-secondary">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                </svg>
+                                Limpiar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Recent Sales -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Ventas Recientes</h3>
+                </div>
+                <div class="card-body">
+                    <div id="recentSalesContainer">
+                        <p class="text-center text-secondary">No hay ventas registradas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Receipt Modal -->
+    <div id="receiptModal" class="modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Comprobante de Venta</h4>
+                    <button type="button" class="modal-close">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="receiptContent" class="receipt">
+                        <!-- Receipt content will be populated here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="printReceiptBtn" class="btn btn-primary">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                        </svg>
+                        Imprimir
+                    </button>
+                    <button type="button" class="btn btn-secondary modal-close">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/sales.js"></script>
+</body>
+</html>
