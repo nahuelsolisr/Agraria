@@ -20,6 +20,7 @@ class SalesModule {
         this.renderRecentSales();
         this.setDefaultDate();
         this.initializeUserInfo();
+        this.applyRoleRestrictions();
     }
     
     loadData() {
@@ -28,26 +29,33 @@ class SalesModule {
         if (savedSales) {
             this.sales = JSON.parse(savedSales);
         }
-        
-        // Load products from localStorage or initialize with sample data
-        const savedProducts = localStorage.getItem('sistemaAgraria_products');
-        if (savedProducts) {
-            this.products = JSON.parse(savedProducts);
+
+        // Prefer products from Inventory module
+        const invProductsRaw = localStorage.getItem('inventory_products');
+        if (invProductsRaw) {
+            try {
+                const invProducts = JSON.parse(invProductsRaw);
+                // Map inventory fields to sales expected shape and keep stock info
+                this.products = invProducts.map(p => ({
+                    id: p.id,
+                    name: p.name,
+                    unit: p.unit,
+                    defaultPrice: p.unitPrice, // price source from inventory
+                    currentStock: p.currentStock,
+                    category: p.category
+                }));
+            } catch (e) {
+                this.products = [];
+            }
         } else {
-            // Initialize with sample products
-            this.products = [
-                { id: 1, name: 'Tomates', unit: 'kg', defaultPrice: 150.00, category: 'Hortalizas' },
-                { id: 2, name: 'Lechugas', unit: 'unidad', defaultPrice: 80.00, category: 'Hortalizas' },
-                { id: 3, name: 'Zanahorias', unit: 'kg', defaultPrice: 120.00, category: 'Hortalizas' },
-                { id: 4, name: 'Huevos', unit: 'docena', defaultPrice: 200.00, category: 'Avícola' },
-                { id: 5, name: 'Pollo', unit: 'kg', defaultPrice: 350.00, category: 'Avícola' },
-                { id: 6, name: 'Miel', unit: 'kg', defaultPrice: 800.00, category: 'Apícola' },
-                { id: 7, name: 'Queso', unit: 'kg', defaultPrice: 450.00, category: 'Lácteos' },
-                { id: 8, name: 'Leche', unit: 'litro', defaultPrice: 85.00, category: 'Lácteos' },
-                { id: 9, name: 'Acelga', unit: 'atado', defaultPrice: 60.00, category: 'Hortalizas' },
-                { id: 10, name: 'Apio', unit: 'kg', defaultPrice: 90.00, category: 'Hortalizas' }
-            ];
-            this.saveProducts();
+            // Fallback legacy storage if exists
+            const savedProducts = localStorage.getItem('sistemaAgraria_products');
+            if (savedProducts) {
+                this.products = JSON.parse(savedProducts);
+            } else {
+                // Minimal empty list; products should come from inventory
+                this.products = [];
+            }
         }
     }
     
@@ -132,20 +140,28 @@ class SalesModule {
     populateProducts() {
         const productSelect = document.getElementById('productSelect');
         if (!productSelect) return;
-        
-        // Clear existing options except first
+        // Clear existing options
         productSelect.innerHTML = '<option value="">Seleccione un producto</option>';
-        
         this.products.forEach(product => {
             const option = document.createElement('option');
             option.value = product.id;
-            option.textContent = `${product.name} (${product.unit}) - $${product.defaultPrice.toFixed(2)}`;
-            option.dataset.price = product.defaultPrice;
+            const price = Number(product.defaultPrice || 0);
+            // Effective stock = currentStock - qty already in cart
+            let effectiveStock = null;
+            if (product.currentStock != null) {
+                const inCart = this.currentSaleItems
+                    .filter(it => it.productId === product.id)
+                    .reduce((sum, it) => sum + Number(it.quantity || 0), 0);
+                effectiveStock = Math.max(0, Number(product.currentStock) - inCart);
+            }
+            const stockTxt = (effectiveStock != null) ? ` | Stock: ${effectiveStock}` : '';
+            option.textContent = `${product.name} (${product.unit}) - $${price.toFixed(2)}${stockTxt}`;
+            option.dataset.price = price;
             option.dataset.unit = product.unit;
             productSelect.appendChild(option);
         });
     }
-    
+
     handleProductChange(e) {
         const selectedOption = e.target.selectedOptions[0];
         const priceInput = document.getElementById('productPrice');
@@ -190,6 +206,18 @@ class SalesModule {
         const product = this.products.find(p => p.id === productId);
         if (!product) return;
         
+        // Stock validation if inventory provides it (considering quantity already in cart)
+        if (product.currentStock != null) {
+            const alreadyInCart = this.currentSaleItems
+                .filter(it => it.productId === productId)
+                .reduce((sum, it) => sum + Number(it.quantity || 0), 0);
+            const available = Number(product.currentStock) - alreadyInCart;
+            if (quantity > available) {
+                alert(`No hay suficiente stock disponible. Disponible: ${available}`);
+                return;
+            }
+        }
+        
         // Check if product already exists in sale
         const existingItemIndex = this.currentSaleItems.findIndex(item => item.productId === productId);
         
@@ -213,12 +241,16 @@ class SalesModule {
         this.renderProductsTable();
         this.updateSaleSummary();
         this.clearProductInputs();
+        // Refresh products selector to reflect effective stock
+        this.populateProducts();
     }
     
     removeProductFromSale(index) {
         this.currentSaleItems.splice(index, 1);
         this.renderProductsTable();
         this.updateSaleSummary();
+        // Refresh selector to reflect effective stock back
+        this.populateProducts();
     }
     
     renderProductsTable() {
@@ -333,6 +365,48 @@ class SalesModule {
         // Save sale
         this.sales.unshift(sale);
         this.saveData();
+
+        // Decrement inventory stock and register movement
+        try {
+            const invProductsRaw = localStorage.getItem('inventory_products');
+            const invMovementsRaw = localStorage.getItem('inventory_movements');
+            let invProducts = invProductsRaw ? JSON.parse(invProductsRaw) : [];
+            let invMovements = invMovementsRaw ? JSON.parse(invMovementsRaw) : [];
+            let nextMovementId = (invMovements.length ? Math.max(...invMovements.map(m => m.id)) : 0) + 1;
+
+            sale.items.forEach(item => {
+                const p = invProducts.find(ip => ip.id === item.productId);
+                if (p) {
+                    const qty = Number(item.quantity) || 0;
+                    p.currentStock = Math.max(0, Number(p.currentStock || 0) - qty);
+                    invMovements.unshift({
+                        id: nextMovementId++,
+                        productId: p.id,
+                        productName: p.name,
+                        type: 'salida',
+                        quantity: qty,
+                        reason: 'Venta',
+                        date: new Date().toISOString().split('T')[0],
+                        user: sale.createdBy || 'Usuario'
+                    });
+                }
+            });
+
+            localStorage.setItem('inventory_products', JSON.stringify(invProducts));
+            localStorage.setItem('inventory_movements', JSON.stringify(invMovements));
+            // Sync this.products currentStock from updated inventory and refresh selector
+            this.products = invProducts.map(p => ({
+                id: p.id,
+                name: p.name,
+                unit: p.unit,
+                defaultPrice: p.unitPrice,
+                currentStock: p.currentStock,
+                category: p.category
+            }));
+            this.populateProducts();
+        } catch (err) {
+            console.warn('No se pudo actualizar inventario desde Ventas:', err);
+        }
         
         // Show receipt
         this.showReceipt(sale);
@@ -528,13 +602,13 @@ class SalesModule {
         if (form) {
             form.reset();
         }
-        
         this.currentSaleItems = [];
         this.clearFormErrors();
         this.setDefaultDate();
         this.renderProductsTable();
         this.updateSaleSummary();
         this.clearProductInputs();
+        this.populateProducts();
     }
     
     renderRecentSales() {
@@ -660,30 +734,63 @@ class SalesModule {
     
     // Initialize current user info in header
     initializeUserInfo() {
-        const currentUser = window.Auth ? window.Auth.getCurrentUser() : null;
-        if (!currentUser) return;
-        
-        const userInitials = document.getElementById('userInitials');
-        const currentUserName = document.getElementById('currentUserName');
-        const currentUserRole = document.getElementById('currentUserRole');
-        
-        if (userInitials) {
-            const initials = (currentUser.firstName.charAt(0) + currentUser.lastName.charAt(0)).toUpperCase();
-            userInitials.textContent = initials;
+         const currentUser = window.Auth ? window.Auth.getCurrentUser() : null;
+         if (!currentUser) return;
+         
+         const userInitials = document.getElementById('userInitials');
+         const currentUserName = document.getElementById('currentUserName');
+         const currentUserRole = document.getElementById('currentUserRole');
+         
+         if (userInitials) {
+             const initials = (currentUser.firstName.charAt(0) + currentUser.lastName.charAt(0)).toUpperCase();
+             userInitials.textContent = initials;
+         }
+         
+         if (currentUserName) {
+             currentUserName.textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+         }
+         
+         if (currentUserRole) {
+             currentUserRole.textContent =
+                 currentUser.role === 'administrador' ? 'Administrador' :
+                 currentUser.role === 'jefe_area' ? 'Jefe de Área' :
+                 currentUser.role === 'profesor_animal' ? 'Profesor - Animal' :
+                 currentUser.role === 'profesor_vegetal' ? 'Profesor - Vegetal' : currentUser.role;
+         }
+         
+         // Show/hide admin navigation
+         const adminNav = document.getElementById('adminOnlyNav');
+         if (adminNav && currentUser.role === 'administrador') {
+             adminNav.style.display = 'block';
+         }
+     }
+    
+    applyRoleRestrictions() {
+        if (!window.Auth) return;
+        const user = window.Auth.getCurrentUser();
+        if (!user) return;
+        // Professors cannot access sales registration
+        if (window.Auth.isProfesor()) {
+            window.location.href = 'dashboard.html';
+            return;
         }
-        
-        if (currentUserName) {
-            currentUserName.textContent = `${currentUser.firstName} ${currentUser.lastName}`;
-        }
-        
-        if (currentUserRole) {
-            currentUserRole.textContent = currentUser.role === 'administrador' ? 'Administrador' : 'Usuario Estándar';
-        }
-        
-        // Show/hide admin navigation
-        const adminNav = document.getElementById('adminOnlyNav');
-        if (adminNav && currentUser.role === 'administrador') {
-            adminNav.style.display = 'block';
+        // Jefe de Área: view-only, disable all inputs and buttons related to registering sales
+        if (window.Auth.isJefeArea()) {
+            const form = document.getElementById('salesForm') || document.getElementById('saleForm');
+            const addBtn = document.getElementById('addProductBtn');
+            const clearBtn = document.getElementById('clearFormBtn');
+            const submitBtns = document.querySelectorAll('button[type="submit"]');
+            const removeButtons = document.querySelectorAll('.remove-product-btn');
+            const inputs = document.querySelectorAll('input, select, textarea');
+            
+            inputs.forEach(el => {
+                // Keep filters like search links usable; but here it's a form, disable all
+                el.disabled = true;
+            });
+            if (addBtn) addBtn.disabled = true;
+            if (clearBtn) clearBtn.disabled = true;
+            removeButtons.forEach(b => b.disabled = true);
+            submitBtns.forEach(b => b.disabled = true);
         }
     }
 }

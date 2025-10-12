@@ -79,8 +79,8 @@ class UsersModule {
             this.users = [
                 {
                     id: 1,
-                    lastName: 'Administrador',
-                    firstName: 'Sistema',
+                    lastName: 'Sistema',
+                    firstName: 'Administrador',
                     document: '12345678',
                     email: 'admin@sistemaagraria.com',
                     address: 'Dirección Principal 123',
@@ -100,22 +100,64 @@ class UsersModule {
                 },
                 {
                     id: 2,
-                    lastName: 'García',
-                    firstName: 'Juan',
-                    document: '87654321',
-                    email: 'juan.garcia@email.com',
-                    address: 'Calle Secundaria 456',
-                    locality: 'La Plata',
+                    lastName: 'Área',
+                    firstName: 'Jefe',
+                    document: '23456789',
+                    email: 'jefe.area@sistemaagraria.com',
+                    address: '',
+                    locality: 'Buenos Aires',
                     party: 'Buenos Aires',
                     postalCode: '1900',
-                    phone: '+54 221 987-6543',
-                    altPhone: '+54 11 9876-5432',
-                    username: 'jgarcia',
-                    password: 'usuario123',
-                    role: 'estandar',
+                    phone: '',
+                    altPhone: '',
+                    username: 'jefe',
+                    password: 'jefe123',
+                    role: 'jefe_area',
                     active: true,
                     securityQuestion: '¿Cuál es el nombre de tu primera mascota?',
                     securityAnswer: 'firulais',
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                },
+                {
+                    id: 3,
+                    lastName: 'Martínez',
+                    firstName: 'Ana',
+                    document: '34567890',
+                    email: 'prof.animal@sistemaagraria.com',
+                    address: '',
+                    locality: 'Buenos Aires',
+                    party: 'Buenos Aires',
+                    postalCode: '1900',
+                    phone: '',
+                    altPhone: '',
+                    username: 'prof.animal',
+                    password: 'prof123',
+                    role: 'profesor_animal',
+                    active: true,
+                    securityQuestion: '¿Cuál es tu color favorito?',
+                    securityAnswer: 'azul',
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                },
+                {
+                    id: 4,
+                    lastName: 'González',
+                    firstName: 'María',
+                    document: '45678901',
+                    email: 'prof.vegetal@sistemaagraria.com',
+                    address: '',
+                    locality: 'Buenos Aires',
+                    party: 'Buenos Aires',
+                    postalCode: '1900',
+                    phone: '',
+                    altPhone: '',
+                    username: 'prof.vegetal',
+                    password: 'prof123',
+                    role: 'profesor_vegetal',
+                    active: true,
+                    securityQuestion: '¿Cuál es tu comida favorita?',
+                    securityAnswer: 'milanesa',
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString()
                 }
@@ -139,7 +181,15 @@ class UsersModule {
             document: user.document,
             email: user.email,
             username: user.username,
-            role: user.role === 'administrador' ? 'Administrador' : 'Usuario Estándar',
+            role: (user.role === 'administrador'
+                ? 'Administrador'
+                : user.role === 'jefe_area'
+                    ? 'Jefe de Área'
+                    : user.role === 'profesor_animal'
+                        ? 'Profesor - Animal'
+                        : user.role === 'profesor_vegetal'
+                            ? 'Profesor - Vegetal'
+                            : user.role),
             active: user.active,
             phone: user.phone || '-',
             createdAt: user.createdAt
@@ -180,16 +230,18 @@ class UsersModule {
                                     <td>${user.phone}</td>
                                     <td>
                                         <div class="flex gap-2">
-                                            <button class="btn btn-sm btn-primary" onclick="window.usersModule.editUser(${user.id})" title="Editar">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                                </svg>
-                                            </button>
-                                            <button class="btn btn-sm btn-danger" onclick="window.usersModule.deleteUser(${user.id})" title="Eliminar">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                </svg>
-                                            </button>
+                                            <button class="btn btn-sm btn-outline" onclick="window.usersModule.editUser (${user.id})" title="Editar">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                            </svg>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="window.usersModule.deleteUser (${user.id})" title="Eliminar">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="3,6 5,6 21,6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                            </svg>
+                                        </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -225,7 +277,8 @@ class UsersModule {
                     <div class="flex gap-2">
                         <button class="btn btn-sm btn-primary" onclick="window.usersModule.editUser(${row.id})" title="Editar">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                             </svg>
                         </button>
                         <button class="btn btn-sm btn-danger" onclick="window.usersModule.deleteUser(${row.id})" title="Eliminar">
@@ -271,6 +324,29 @@ class UsersModule {
         // Reset form
         form.reset();
         this.clearFormErrors();
+
+        // Handle professor type field visibility
+        const roleSelect = form.querySelector('#role');
+        const professorTypeGroup = document.getElementById('professorTypeGroup');
+        const professorTypeSelect = form.querySelector('#professorType');
+        const toggleProfessorType = () => {
+            if (!roleSelect) return;
+            const isProfessor = roleSelect.value === 'profesor';
+            if (professorTypeGroup) {
+                professorTypeGroup.style.display = isProfessor ? 'block' : 'none';
+            }
+            if (professorTypeSelect) {
+                professorTypeSelect.required = isProfessor;
+                if (!isProfessor) {
+                    professorTypeSelect.value = '';
+                }
+            }
+        };
+        if (roleSelect) {
+            roleSelect.removeEventListener('change', this._roleChangeHandler);
+            this._roleChangeHandler = toggleProfessorType;
+            roleSelect.addEventListener('change', this._roleChangeHandler);
+        }
         
         if (user) {
             // Populate form with user data
@@ -284,7 +360,15 @@ class UsersModule {
                     }
                 }
             });
-            
+
+            // Adjust role/professorType for editing if user is a professor
+            if (roleSelect && professorTypeSelect) {
+                if (user.role === 'profesor_animal' || user.role === 'profesor_vegetal') {
+                    roleSelect.value = 'profesor';
+                    professorTypeSelect.value = (user.role === 'profesor_animal') ? 'animal' : 'vegetal';
+                }
+            }
+
             // Don't require password for editing
             const passwordField = form.querySelector('[name="password"]');
             if (passwordField) {
@@ -299,6 +383,9 @@ class UsersModule {
                 passwordField.placeholder = '';
             }
         }
+
+        // Ensure professor type visibility is correct after prefill
+        toggleProfessorType();
         
         console.log('About to show modal...');
         
@@ -323,18 +410,12 @@ class UsersModule {
     closeUserModal() {
         const modal = document.getElementById('userModal');
         if (!modal) return;
-        
-        // Hide modal using multiple methods
+        // Hide modal and restore scroll
         modal.style.display = 'none';
         modal.classList.remove('show');
         modal.classList.remove('modal-open');
         document.body.style.overflow = '';
-        
-        // Try using Components system if available
-        if (window.Components && window.Components.closeModal) {
-            window.Components.closeModal(modal);
-        }
-        
+        // Reset state
         this.currentUser = null;
         this.isEditing = false;
     }
@@ -349,6 +430,19 @@ class UsersModule {
         // Convert FormData to object
         for (let [key, value] of formData.entries()) {
             userData[key] = value;
+        }
+
+        // Map role when 'Profesor' is selected
+        const roleSelect = form.querySelector('#role');
+        const professorTypeSelect = form.querySelector('#professorType');
+        if (roleSelect && roleSelect.value === 'profesor') {
+            const pType = professorTypeSelect ? professorTypeSelect.value : '';
+            if (!pType) {
+                // Show error and stop
+                this.showFieldError('professorType', 'Seleccione el tipo de profesor');
+                return;
+            }
+            userData.role = (pType === 'animal') ? 'profesor_animal' : 'profesor_vegetal';
         }
         
         // Validate form
@@ -554,7 +648,11 @@ class UsersModule {
         }
         
         if (currentUserRole) {
-            currentUserRole.textContent = currentUser.role === 'administrador' ? 'Administrador' : 'Usuario Estándar';
+            currentUserRole.textContent =
+                currentUser.role === 'administrador' ? 'Administrador' :
+                currentUser.role === 'jefe_area' ? 'Jefe de Área' :
+                currentUser.role === 'profesor_animal' ? 'Profesor - Animal' :
+                currentUser.role === 'profesor_vegetal' ? 'Profesor - Vegetal' : currentUser.role;
         }
     }
 }

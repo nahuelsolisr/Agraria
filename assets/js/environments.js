@@ -15,7 +15,9 @@ class EnvironmentsModule {
     init() {
         this.loadEnvironments();
         this.bindEvents();
+        this.populateTeachersSelect();
         this.renderEnvironmentsTable();
+        this.applyRoleRestrictions();
     }
     
     bindEvents() {
@@ -74,6 +76,9 @@ class EnvironmentsModule {
         const savedEnvironments = localStorage.getItem('sistemaAgraria_environments');
         if (savedEnvironments) {
             this.environments = JSON.parse(savedEnvironments);
+            // Migrate existing records to ensure responsibleId/responsibleName are set
+            this.migrateEnvironmentsUsers();
+            this.saveEnvironments();
         } else {
             // Initialize with default environments
             this.environments = [
@@ -81,6 +86,8 @@ class EnvironmentsModule {
                     id: 1,
                     environmentName: 'Huerta Principal',
                     environmentType: 'vegetal',
+                    responsibleId: 4,
+                    responsibleName: 'María González',
                     responsibleTeacher: 'Prof. María González',
                     year: '3',
                     division: 'A',
@@ -93,7 +100,9 @@ class EnvironmentsModule {
                     id: 2,
                     environmentName: 'Vivero Escolar',
                     environmentType: 'vegetal',
-                    responsibleTeacher: 'Prof. Carlos Rodríguez',
+                    responsibleId: 4,
+                    responsibleName: 'María González',
+                    responsibleTeacher: 'Prof. María González',
                     year: '2',
                     division: 'B',
                     group: 'Grupo 2',
@@ -105,6 +114,8 @@ class EnvironmentsModule {
                     id: 3,
                     environmentName: 'Granja Avícola',
                     environmentType: 'animal',
+                    responsibleId: 3,
+                    responsibleName: 'Ana Martínez',
                     responsibleTeacher: 'Prof. Ana Martínez',
                     year: '4',
                     division: 'A',
@@ -112,7 +123,8 @@ class EnvironmentsModule {
                     observations: 'Cría y manejo de aves de corral',
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString()
-                }
+                },
+                
             ];
             this.saveEnvironments();
         }
@@ -126,11 +138,31 @@ class EnvironmentsModule {
         const container = document.getElementById('environmentsTableContainer');
         if (!container) return;
         
-        const tableData = this.environments.map(env => ({
+        // Filter by role
+        let environmentsToRender = [...this.environments];
+        const currentUser = window.Auth ? window.Auth.getCurrentUser() : null;
+        if (currentUser) {
+            // Professor: only environments of their type and assigned to them
+            if (window.Auth.isProfesor()) {
+                const tipo = window.Auth.getProfesorTipo();
+                environmentsToRender = environmentsToRender.filter(e => {
+                    const normalizeName = (s) => (s || '')
+                        .toLowerCase()
+                        .replace(/^\s*prof\.?\s*/i, '')
+                        .trim();
+                    const assignedToUser = (e.responsibleId && e.responsibleId === currentUser.id) ||
+                        (e.responsibleTeacher && normalizeName(`${currentUser.firstName} ${currentUser.lastName}`) === normalizeName(e.responsibleTeacher)) ||
+                        (e.responsibleName && normalizeName(`${currentUser.firstName} ${currentUser.lastName}`) === normalizeName(e.responsibleName));
+                    return e.environmentType === tipo && assignedToUser;
+                });
+            }
+        }
+        
+        const tableData = environmentsToRender.map(env => ({
             id: env.id,
             environmentName: env.environmentName,
             environmentType: this.getEnvironmentTypeLabel(env.environmentType),
-            responsibleTeacher: env.responsibleTeacher,
+            responsibleTeacher: env.responsibleName || env.responsibleTeacher,
             year: env.year + '°',
             division: env.division,
             group: env.group,
@@ -169,14 +201,16 @@ class EnvironmentsModule {
                                 <td>${env.observations}</td>
                                 <td>
                                     <div class="flex gap-2">
-                                        <button class="btn btn-sm btn-primary" onclick="window.environmentsModule.editEnvironment(${env.id})" title="Editar">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        <button class="btn btn-sm btn-outline action-edit" onclick="window.environmentsModule.editEnvironment(${env.id})" title="Editar">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                             </svg>
                                         </button>
-                                        <button class="btn btn-sm btn-danger" onclick="window.environmentsModule.deleteEnvironment(${env.id})" title="Eliminar">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        <button class="btn btn-sm btn-danger action-delete" onclick="window.environmentsModule.deleteEnvironment(${env.id})" title="Eliminar">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="3,6 5,6 21,6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                             </svg>
                                         </button>
                                     </div>
@@ -189,6 +223,15 @@ class EnvironmentsModule {
         `;
         
         container.innerHTML = tableHTML;
+        
+        // Apply role-based disable on actions
+        const current = window.Auth ? window.Auth.getCurrentUser() : null;
+        if (current && (window.Auth.isJefeArea() || window.Auth.isProfesor())) {
+            const editButtons = container.querySelectorAll('.action-edit');
+            const deleteButtons = container.querySelectorAll('.action-delete');
+            editButtons.forEach(btn => { btn.disabled = true; btn.classList.add('btn-disabled'); });
+            deleteButtons.forEach(btn => { btn.disabled = true; btn.classList.add('btn-disabled'); });
+        }
     }
     
     getEnvironmentTypeLabel(type) {
@@ -219,6 +262,11 @@ class EnvironmentsModule {
             return;
         }
         
+        // Block create/edit for jefe_area and profesor
+        if (window.Auth && (window.Auth.isJefeArea() || window.Auth.isProfesor())) {
+            return; // silently ignore
+        }
+        
         this.isEditing = !!environment;
         this.currentEnvironment = environment;
         
@@ -228,6 +276,26 @@ class EnvironmentsModule {
         form.reset();
         this.clearFormErrors();
         
+        // Ensure teachers select is populated and filtered to current type
+        this.populateTeachersSelect();
+        const typeSelect = form.querySelector('#environmentType');
+        const teacherSelect = form.querySelector('#responsibleTeacher');
+        const filterTeachersByType = () => {
+            if (!typeSelect || !teacherSelect) return;
+            const tipo = typeSelect.value; // 'animal' | 'vegetal' | 'otro'
+            for (const opt of teacherSelect.options) {
+                if (!opt.value) continue; // skip placeholder
+                const role = opt.dataset.role;
+                const matches = (tipo === 'animal' && role === 'profesor_animal') || (tipo === 'vegetal' && role === 'profesor_vegetal');
+                opt.style.display = matches ? '' : 'none';
+            }
+        };
+        if (typeSelect) {
+            typeSelect.removeEventListener('change', this._envTypeChangeHandler);
+            this._envTypeChangeHandler = filterTeachersByType;
+            typeSelect.addEventListener('change', this._envTypeChangeHandler);
+        }
+        
         if (environment) {
             // Populate form with environment data
             Object.keys(environment).forEach(key => {
@@ -236,6 +304,13 @@ class EnvironmentsModule {
                     field.value = environment[key];
                 }
             });
+            // If we have a responsibleId, set select accordingly
+            const respSelect = form.querySelector('#responsibleTeacher');
+            if (respSelect && environment.responsibleId) {
+                respSelect.value = environment.responsibleId;
+            }
+            // After setting values, filter teacher options by type
+            filterTeachersByType();
         }
         
         // Show modal with proper timing
@@ -277,6 +352,16 @@ class EnvironmentsModule {
         // Convert FormData to object
         for (let [key, value] of formData.entries()) {
             environmentData[key] = value;
+        }
+        
+        // Map responsible teacher select to id and name
+        const respSelect = form.querySelector('#responsibleTeacher');
+        if (respSelect) {
+            const selectedOption = respSelect.selectedOptions[0];
+            environmentData.responsibleId = selectedOption ? parseInt(selectedOption.value) : null;
+            environmentData.responsibleName = selectedOption ? selectedOption.textContent : '';
+            // Keep legacy field for compatibility
+            environmentData.responsibleTeacher = environmentData.responsibleName;
         }
         
         // Validate form
@@ -429,7 +514,93 @@ class EnvironmentsModule {
         }
         
         if (currentUserRole) {
-            currentUserRole.textContent = currentUser.role === 'administrador' ? 'Administrador' : 'Usuario Estándar';
+            currentUserRole.textContent =
+                currentUser.role === 'administrador' ? 'Administrador' :
+                currentUser.role === 'jefe_area' ? 'Jefe de Área' :
+                currentUser.role === 'profesor_animal' ? 'Profesor - Animal' :
+                currentUser.role === 'profesor_vegetal' ? 'Profesor - Vegetal' : currentUser.role;
+        }
+    }
+    
+    populateTeachersSelect() {
+        const select = document.getElementById('responsibleTeacher');
+        if (!select) return;
+        // Clear options except first
+        while (select.children.length > 1) {
+            select.removeChild(select.lastChild);
+        }
+        try {
+            const usersRaw = localStorage.getItem('sistemaAgraria_users');
+            const users = usersRaw ? JSON.parse(usersRaw) : [];
+            const teachers = users.filter(u => u.role === 'profesor_animal' || u.role === 'profesor_vegetal');
+            teachers.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t.id;
+                opt.textContent = `${t.firstName} ${t.lastName}`;
+                opt.dataset.role = t.role;
+                select.appendChild(opt);
+            });
+        } catch (e) { /* ignore */ }
+    }
+    
+    applyRoleRestrictions() {
+        const currentUser = window.Auth ? window.Auth.getCurrentUser() : null;
+        if (!currentUser) return;
+        const addBtn = document.getElementById('addEnvironmentBtn');
+        // Jefe de Área: no access to entornos
+        if (window.Auth.isJefeArea()) {
+            window.location.href = 'dashboard.html';
+            return;
+        }
+        // Profesor: can view limited, no create/edit/delete
+        if (window.Auth.isProfesor()) {
+            if (addBtn) { addBtn.disabled = true; addBtn.style.display = 'none'; }
+        }
+     }
+    
+    migrateEnvironmentsUsers() {
+        try {
+            const usersRaw = localStorage.getItem('sistemaAgraria_users');
+            const users = usersRaw ? JSON.parse(usersRaw) : [];
+            const normalizeName = (s) => (s || '')
+                .toLowerCase()
+                .replace(/^\s*prof\.?\s*/i, '')
+                .trim();
+            const findUserByName = (display) => {
+                const normalized = normalizeName(display);
+                return users.find(u => normalizeName(`${u.firstName} ${u.lastName}`) === normalized);
+            };
+            const findProfessorByType = (tipo) => {
+                const role = tipo === 'animal' ? 'profesor_animal' : (tipo === 'vegetal' ? 'profesor_vegetal' : null);
+                if (!role) return null;
+                return users.find(u => u.role === role) || null;
+            };
+            let changed = false;
+            this.environments.forEach(env => {
+                if (!env.responsibleId) {
+                    const candidate = findUserByName(env.responsibleName || env.responsibleTeacher);
+                    if (candidate) {
+                        env.responsibleId = candidate.id;
+                        env.responsibleName = `${candidate.firstName} ${candidate.lastName}`;
+                        // keep legacy field for UI
+                        if (!env.responsibleTeacher) env.responsibleTeacher = env.responsibleName;
+                        changed = true;
+                    } else {
+                        // Fallback: if this looks like a demo environment and no matching name is found,
+                        // assign it to the first professor of the matching type (animal/vegetal)
+                        const profByType = findProfessorByType(env.environmentType);
+                        if (profByType) {
+                            env.responsibleId = profByType.id;
+                            env.responsibleName = `${profByType.firstName} ${profByType.lastName}`;
+                            if (!env.responsibleTeacher) env.responsibleTeacher = env.responsibleName;
+                            changed = true;
+                        }
+                    }
+                }
+            });
+            if (changed) this.saveEnvironments();
+        } catch (e) {
+            // ignore migration errors
         }
     }
 }
@@ -442,6 +613,7 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = 'index.html';
             return;
         }
+        // Professors can access but with restrictions; others ok
     } else {
         console.log('Auth system not found, proceeding without authentication check');
     }

@@ -28,24 +28,67 @@ class SalesQueryModule {
             if (user) {
                 const userNameElement = document.getElementById('currentUserName');
                 if (userNameElement) {
-                    userNameElement.textContent = user.nombre || user.username || 'Usuario';
+                    userNameElement.textContent = `${user.firstName} ${user.lastName}` || user.username || 'Usuario';
+                }
+
+                const roleEl = document.getElementById('currentUserRole');
+                if (roleEl) {
+                    roleEl.textContent =
+                        user.role === 'administrador' ? 'Administrador' :
+                        user.role === 'jefe_area' ? 'Jefe de Área' :
+                        user.role === 'profesor_animal' ? 'Profesor - Animal' :
+                        user.role === 'profesor_vegetal' ? 'Profesor - Vegetal' : (user.role || 'Usuario');
                 }
 
                 // Show/hide admin sections based on role
                 const adminSections = document.querySelectorAll('.admin-only');
                 adminSections.forEach(section => {
-                    if (user.rol === 'admin') {
+                    if (user.role === 'administrador') {
                         section.style.display = 'block';
                     } else {
                         section.style.display = 'none';
                     }
                 });
+
+                // Professors cannot access sales query per requirements
+                if (window.Auth.isProfesor()) {
+                    window.location.href = 'dashboard.html';
+                }
             }
         }
     }
 
     loadSalesData() {
-        // Load sales from localStorage or use sample data
+        // Prefer sales saved by sales module
+        const savedByModule = localStorage.getItem('sistemaAgraria_sales');
+        if (savedByModule) {
+            try {
+                const raw = JSON.parse(savedByModule);
+                // Map SalesModule shape -> Query shape
+                this.sales = raw.map(s => ({
+                    id: s.id,
+                    date: s.saleDate || s.date || (s.createdAt ? s.createdAt.split('T')[0] : ''),
+                    customer: s.customerName || s.customer || '',
+                    seller: s.createdBy || s.seller || 'Usuario',
+                    products: (s.items || []).map(it => ({
+                        name: it.productName || it.name,
+                        quantity: Number(it.quantity) || 0,
+                        price: Number(it.unitPrice) || 0,
+                        subtotal: Number(it.subtotal) || ((Number(it.quantity)||0) * (Number(it.unitPrice)||0))
+                    })),
+                    subtotal: Number(s.subtotal) || 0,
+                    tax: Number(s.tax) || 0,
+                    total: Number(s.total) || 0
+                }));
+                // Also persist to legacy key for compatibility
+                localStorage.setItem('sales', JSON.stringify(this.sales));
+                return;
+            } catch (e) {
+                // Fallback below
+            }
+        }
+
+        // Fallback: legacy key or seed sample data
         const storedSales = localStorage.getItem('sales');
         if (storedSales) {
             this.sales = JSON.parse(storedSales);

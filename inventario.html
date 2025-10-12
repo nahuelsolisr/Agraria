@@ -1,171 +1,167 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <link href="assets/images/logo.svg" rel="shortcut icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Sistema Agraria - Inventario">
+    <meta name="author" content="Sistema Agraria">
     <title>Inventario - Sistema Agraria</title>
-    <link rel="stylesheet" href="assets/css/variables.css">
-    <link rel="stylesheet" href="assets/css/layout.css">
-    <link rel="stylesheet" href="assets/css/forms.css">
-    <link rel="stylesheet" href="assets/css/tables.css">
-    <link rel="stylesheet" href="assets/css/utilities.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/components.css">
 </head>
 <body>
-    <div class="app-container">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <h2>Sistema Agraria</h2>
-                <button class="sidebar-toggle" id="sidebarToggle">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <line x1="3" y1="12" x2="21" y2="12"></line>
-                        <line x1="3" y1="18" x2="21" y2="18"></line>
+    <!-- BEGIN: Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="flex items-center">
+                <img alt="Sistema Agraria" class="w-8" src="assets/images/logo.svg">
+                <span class="text-white text-lg ml-3">Sistema <span class="font-medium">Agraria</span></span>
+            </a>
+        </div>
+        
+        <ul class="sidebar-nav">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-2M9 5H7a2 2 0 00-2 2v6a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                     </svg>
-                </button>
-            </div>
-            <nav class="sidebar-nav">
-                <ul>
-                    <li><a href="dashboard.html">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="14" width="7" height="7"></rect>
-                            <rect x="3" y="14" width="7" height="7"></rect>
-                        </svg>
-                        Dashboard
-                    </a></li>
-                    <li class="nav-section admin-only">
-                        <span class="nav-section-title">Administración</span>
-                        <ul>
-                            <li><a href="usuarios.html">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                                Usuarios
-                            </a></li>
-                            <li><a href="entornos.html">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                                    <polyline points="3.27,6.96 12,12.01 20.73,6.96"></polyline>
-                                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                                </svg>
-                                Entornos de Formación
-                            </a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-section">
-                        <span class="nav-section-title">Actividades</span>
-                        <ul>
-                            <li><a href="actividades.html">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                    <polyline points="14,2 14,8 20,8"></polyline>
-                                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                                    <polyline points="10,9 9,9 8,9"></polyline>
-                                </svg>
-                                Registro de Actividades
-                            </a></li>
-                            <li><a href="consulta-actividades.html">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="11" cy="11" r="8"></circle>
-                                    <path d="m21 21-4.35-4.35"></path>
-                                </svg>
-                                Consulta de Actividades
-                            </a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-section">
-                        <span class="nav-section-title">Ventas</span>
-                        <ul>
-                            <li><a href="ventas.html">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                                    <path d="M16 10a4 4 0 0 1-8 0"></path>
-                                </svg>
-                                Registro de Ventas
-                            </a></li>
-                            <li><a href="consulta-ventas.html">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="11" cy="11" r="8"></circle>
-                                    <path d="m21 21-4.35-4.35"></path>
-                                </svg>
-                                Consulta de Ventas
-                            </a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-section">
-                        <span class="nav-section-title">Inventario</span>
-                        <ul>
-                            <li><a href="inventario.html" class="active">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8z"></path>
-                                    <polyline points="7.5,4.21 12,6.81 16.5,4.21"></polyline>
-                                    <polyline points="7.5,19.79 7.5,14.6 3,12"></polyline>
-                                    <polyline points="21,12 16.5,14.6 16.5,19.79"></polyline>
-                                </svg>
-                                Inventario
-                            </a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
+                    Dashboard
+                </a>
+            </li>
+            
+            <li class="nav-item" id="usersNavItem">
+                <a href="usuarios.html" class="nav-link">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                    </svg>
+                    Usuarios
+                </a>
+            </li>
+            
+            <li class="nav-item">
+                <a href="entornos.html" class="nav-link">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                    Entornos Formativos
+                </a>
+            </li>
+            
+            <li class="nav-item">
+                <a href="actividades.html" class="nav-link">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    Registro de Actividades
+                </a>
+            </li>
+            
+            <li class="nav-item">
+                <a href="consulta-actividades.html" class="nav-link">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    Consulta de Actividades
+                </a>
+            </li>
+            
+            <li class="nav-item">
+                <a href="ventas.html" class="nav-link">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                    </svg>
+                    Registro de Ventas
+                </a>
+            </li>
+            
+            <li class="nav-item">
+                <a href="consulta-ventas.html" class="nav-link">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    Consulta de Ventas
+                </a>
+            </li>
+            
+            <li class="nav-item">
+                <a href="inventario.html" class="nav-link active">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                    Inventario
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <!-- END: Sidebar -->
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Header -->
-            <header class="header">
-                <div class="header-left">
-                    <button class="sidebar-toggle mobile-only" id="mobileSidebarToggle">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="3" y1="6" x2="21" y2="6"></line>
-                            <line x1="3" y1="12" x2="21" y2="12"></line>
-                            <line x1="3" y1="18" x2="21" y2="18"></line>
+    <!-- BEGIN: Main Content -->
+    <main class="main-content">
+        <!-- BEGIN: Header -->
+        <header class="content-header">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <button id="mobileMenuToggle" class="btn btn-secondary mr-4 lg:hidden">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
                     </button>
-                    <h1>Inventario</h1>
+                    
+                    <div>
+                        <h1 class="text-2xl font-bold text-primary">Inventario</h1>
+                        <nav class="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
+                                <li class="breadcrumb-item active">Inventario</li>
+                            </ol>
+                        </nav>
+                    </div>
                 </div>
-                <div class="header-right">
-                    <div class="user-menu">
-                        <button class="user-menu-toggle" id="userMenuToggle">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg>
-                            <span id="currentUserName">Usuario</span>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="6,9 12,15 18,9"></polyline>
+                
+                <div class="flex items-center gap-4">
+                    <div class="dropdown">
+                        <button class="dropdown-toggle flex items-center gap-2">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                <span class="text-white text-sm font-medium" id="userInitials">U</span>
+                            </div>
+                            <div class="text-left">
+                                <p class="text-sm font-medium" id="currentUserName">Usuario</p>
+                                <p class="text-xs text-secondary" id="currentUserRole">Rol</p>
+                            </div>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div class="user-menu-dropdown" id="userMenuDropdown">
-                            <a href="#" id="logoutBtn">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                                    <polyline points="16,17 21,12 16,7"></polyline>
-                                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                        
+                        <div class="dropdown-menu">
+                            
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item" id="logoutBtn">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                                 </svg>
                                 Cerrar Sesión
                             </a>
                         </div>
                     </div>
                 </div>
-            </header>
-
-            <!-- Page Content -->
-            <main class="page-content">
-                <!-- Stock Movement Form -->
-                <div class="card mb-6">
-                    <div class="card-header">
-                        <h3>Movimiento de Stock</h3>
-                    </div>
-                    <div class="card-body">
-                        <form id="stockMovementForm" class="form-grid">
+            </div>
+        </header>
+        <!-- END: Header -->
+        
+        <!-- BEGIN: Content Body -->
+        <div class="content-body">
+            <!-- Stock Movement Form -->
+            <div class="card mb-6">
+                <div class="card-header">
+                    <h3 class="card-title">Movimiento de Stock</h3>
+                </div>
+                <div class="card-body">
+                    <form id="stockMovementForm" class="form">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             <div class="form-group">
-                                <label for="movementType">Tipo de Movimiento</label>
+                                <label for="movementType" class="form-label">Tipo de Movimiento</label>
                                 <select id="movementType" class="form-control" required>
                                     <option value="">Seleccionar tipo</option>
                                     <option value="entrada">Entrada</option>
@@ -174,48 +170,47 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="productSelect">Producto</label>
+                                <label for="productSelect" class="form-label">Producto</label>
                                 <select id="productSelect" class="form-control" required>
                                     <option value="">Seleccionar producto</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="quantity">Cantidad</label>
+                                <label for="quantity" class="form-label">Cantidad</label>
                                 <input type="number" id="quantity" class="form-control" min="1" required>
                             </div>
                             <div class="form-group">
-                                <label for="reason">Motivo</label>
+                                <label for="reason" class="form-label">Motivo</label>
                                 <input type="text" id="reason" class="form-control" placeholder="Motivo del movimiento" required>
                             </div>
-                        </form>
-                        <div class="form-actions">
-                            <button type="submit" form="stockMovementForm" class="btn btn-primary">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                                    <polyline points="17,21 17,13 7,13 7,21"></polyline>
-                                    <polyline points="7,3 7,8 15,8"></polyline>
+                        </div>
+                        <div class="flex gap-4 mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                 </svg>
                                 Registrar Movimiento
                             </button>
                         </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Current Stock -->
+            <div class="card mb-6">
+                <div class="card-header">
+                    <div class="flex items-center justify-between">
+                        <h3 class="card-title">Stock Actual</h3>
+                        <button type="button" id="addProductBtn" class="btn btn-success">
+                            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Agregar Producto
+                        </button>
                     </div>
                 </div>
-
-                <!-- Current Stock -->
-                <div class="card mb-6">
-                    <div class="card-header">
-                        <h3>Stock Actual</h3>
-                        <div class="card-header-actions">
-                            <button type="button" id="addProductBtn" class="btn btn-success btn-sm">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                                </svg>
-                                Agregar Producto
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
+                <div class="card-body">
+                    <div id="inventoryTableContainer">
                         <div class="table-responsive">
                             <table class="table" id="inventoryTable">
                                 <thead>
@@ -236,13 +231,15 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Recent Movements -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Movimientos Recientes</h3>
-                    </div>
-                    <div class="card-body">
+            <!-- Recent Movements -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Movimientos Recientes</h3>
+                </div>
+                <div class="card-body">
+                    <div id="movementsTableContainer">
                         <div class="table-responsive">
                             <table class="table table-sm" id="movementsTable">
                                 <thead>
@@ -262,77 +259,97 @@
                         </div>
                     </div>
                 </div>
-            </main>
+            </div>
         </div>
-    </div>
+        <!-- END: Content Body -->
+    </main>
+    <!-- END: Main Content -->
 
     <!-- Add Product Modal -->
     <div class="modal" id="addProductModal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Agregar Producto</h4>
-                    <button type="button" class="modal-close" data-dismiss="modal">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                    </button>
+                    <h5 class="modal-title">Agregar Producto</h5>
+                    <button type="button" class="modal-close">&times;</button>
                 </div>
                 <div class="modal-body">
                     <form id="addProductForm">
-                        <div class="form-group">
-                            <label for="productName">Nombre del Producto</label>
-                            <input type="text" id="productName" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="productCategory">Categoría</label>
-                            <select id="productCategory" class="form-control" required>
-                                <option value="">Seleccionar categoría</option>
-                                <option value="semillas">Semillas</option>
-                                <option value="fertilizantes">Fertilizantes</option>
-                                <option value="herramientas">Herramientas</option>
-                                <option value="macetas">Macetas y Contenedores</option>
-                                <option value="sustratos">Sustratos</option>
-                                <option value="otros">Otros</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="initialStock">Stock Inicial</label>
-                            <input type="number" id="initialStock" class="form-control" min="0" value="0" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="minStock">Stock Mínimo</label>
-                            <input type="number" id="minStock" class="form-control" min="0" value="5" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="unitPrice">Precio Unitario</label>
-                            <input type="number" id="unitPrice" class="form-control" min="0" step="0.01" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="unit">Unidad de Medida</label>
-                            <select id="unit" class="form-control" required>
-                                <option value="">Seleccionar unidad</option>
-                                <option value="unidad">Unidad</option>
-                                <option value="kg">Kilogramo</option>
-                                <option value="litro">Litro</option>
-                                <option value="paquete">Paquete</option>
-                                <option value="caja">Caja</option>
-                            </select>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="form-group">
+                                <label for="productName" class="form-label">Nombre del Producto</label>
+                                <input type="text" id="productName" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="productCategory" class="form-label">Categoría</label>
+                                <select id="productCategory" class="form-control" required>
+                                    <option value="">Seleccionar categoría</option>
+                                    <option value="semillas">Semillas</option>
+                                    <option value="fertilizantes">Fertilizantes</option>
+                                    <option value="herramientas">Herramientas</option>
+                                    <option value="macetas">Macetas y Contenedores</option>
+                                    <option value="sustratos">Sustratos</option>
+                                    <option value="otros">Otros</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="initialStock" class="form-label">Stock Inicial</label>
+                                <input type="number" id="initialStock" class="form-control" min="0" value="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="minStock" class="form-label">Stock Mínimo</label>
+                                <input type="number" id="minStock" class="form-control" min="0" value="5" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="unitPrice" class="form-label">Precio Unitario</label>
+                                <input type="number" id="unitPrice" class="form-control" min="0" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="unit" class="form-label">Unidad de Medida</label>
+                                <select id="unit" class="form-control" required>
+                                    <option value="">Seleccionar unidad</option>
+                                    <option value="unidad">Unidad</option>
+                                    <option value="kg">Kilogramo</option>
+                                    <option value="litro">Litro</option>
+                                    <option value="paquete">Paquete</option>
+                                    <option value="caja">Caja</option>
+                                </select>
+                            </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary modal-close">Cancelar</button>
                     <button type="submit" form="addProductForm" class="btn btn-primary">Agregar Producto</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="assets/js/auth.js"></script>
+    <!-- BEGIN: JS Assets-->
     <script src="assets/js/components.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/main.js"></script>
     <script src="assets/js/inventory.js"></script>
+    <script>
+        // Initialize page-specific functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = Auth.getCurrentUser();
+            if (user) {
+                // Update user initials
+                const initials = (user.firstName.charAt(0) + user.lastName.charAt(0)).toUpperCase();
+                document.getElementById('userInitials').textContent = initials;
+                
+                // Hide users menu for non-admin users
+                if (user.role !== 'administrador') {
+                    const usersNavItem = document.getElementById('usersNavItem');
+                    if (usersNavItem) {
+                        usersNavItem.style.display = 'none';
+                    }
+                }
+            }
+        });
+    </script>
+    <!-- END: JS Assets-->
 </body>
 </html>

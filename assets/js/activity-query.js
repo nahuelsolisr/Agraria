@@ -18,6 +18,7 @@ class ActivityQueryModule {
         this.bindEvents();
         this.populateFilterOptions();
         this.initializeUserInfo();
+        this.applyProfessorRestrictions();
     }
     
     loadData() {
@@ -41,8 +42,8 @@ class ActivityQueryModule {
             filterForm.addEventListener('submit', (e) => this.handleFilterSubmit(e));
         }
         
-        // Clear filters button
-        const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+        // Clear filters button (matches consulta-actividades.html id="clearBtn")
+        const clearFiltersBtn = document.getElementById('clearBtn');
         if (clearFiltersBtn) {
             clearFiltersBtn.addEventListener('click', () => this.clearFilters());
         }
@@ -104,7 +105,19 @@ class ActivityQueryModule {
         // Clear existing options except first
         environmentSelect.innerHTML = '<option value="">Todos los entornos</option>';
         
-        this.environments.forEach(env => {
+        const isProfesor = window.Auth && window.Auth.isProfesor && window.Auth.isProfesor();
+        const currentUser = window.Auth && window.Auth.getCurrentUser ? window.Auth.getCurrentUser() : null;
+        const tipo = window.Auth && window.Auth.getProfesorTipo ? window.Auth.getProfesorTipo() : null;
+        
+        const environmentsToList = this.environments.filter(env => {
+            if (!isProfesor || !currentUser) return true;
+            // Only environments of professor's type and assigned to them
+            const typeMatch = env.environmentType === tipo;
+            const assigned = env.responsibleId === currentUser.id;
+            return typeMatch && assigned;
+        });
+        
+        environmentsToList.forEach(env => {
             const option = document.createElement('option');
             option.value = env.id;
             option.textContent = `${env.environmentName} (${this.getEnvironmentTypeLabel(env.environmentType)})`;
@@ -120,7 +133,20 @@ class ActivityQueryModule {
         const teachers = [...new Set(this.activities.map(activity => activity.responsibleTeacher))];
         
         // Clear existing options except first
-        teacherSelect.innerHTML = '<option value="">Todos los profesores</option>';
+        const isProfesor = window.Auth && window.Auth.isProfesor && window.Auth.isProfesor();
+        const currentUser = window.Auth && window.Auth.getCurrentUser ? window.Auth.getCurrentUser() : null;
+        if (isProfesor && currentUser) {
+            const myName = `${currentUser.firstName} ${currentUser.lastName}`;
+            teacherSelect.innerHTML = '';
+            const opt = document.createElement('option');
+            opt.value = myName;
+            opt.textContent = myName;
+            teacherSelect.appendChild(opt);
+            teacherSelect.disabled = true;
+            return;
+        } else {
+            teacherSelect.innerHTML = '<option value="">Todos los profesores</option>';
+        }
         
         teachers.forEach(teacher => {
             const option = document.createElement('option');
@@ -150,7 +176,21 @@ class ActivityQueryModule {
     }
     
     applyFilters() {
+        const isProfesor = window.Auth && window.Auth.isProfesor && window.Auth.isProfesor();
+        const currentUser = window.Auth && window.Auth.getCurrentUser ? window.Auth.getCurrentUser() : null;
+        const tipo = window.Auth && window.Auth.getProfesorTipo ? window.Auth.getProfesorTipo() : null;
+        
         this.filteredActivities = this.activities.filter(activity => {
+            // Force professor scope
+            if (isProfesor && currentUser) {
+                const normalizeName = (s) => (s || '').toLowerCase().replace(/^\s*prof\.?\s*/i, '').trim();
+                const matchesType = activity.environmentType === tipo;
+                const matchesTeacher = normalizeName(activity.responsibleTeacher) === normalizeName(`${currentUser.firstName} ${currentUser.lastName}`);
+                if (!(matchesType && matchesTeacher)) {
+                    return false;
+                }
+            }
+            
             // Environment filter
             if (this.currentFilters.filterEnvironment && 
                 activity.environmentId !== parseInt(this.currentFilters.filterEnvironment)) {
@@ -424,6 +464,10 @@ class ActivityQueryModule {
         this.currentFilters = {};
         this.filteredActivities = [];
         
+        // Repopulate selects and re-apply role restrictions (especially for profesor)
+        this.populateFilterOptions();
+        this.applyProfessorRestrictions();
+        
         // Clear results
         const container = document.getElementById('resultsTableContainer');
         const countElement = document.getElementById('resultsCount');
@@ -483,6 +527,29 @@ class ActivityQueryModule {
         if (window.Components && window.Components.Alert) {
             window.Components.Alert.show('Archivo exportado exitosamente', 'success');
         }
+    }
+    
+    applyProfessorRestrictions() {
+        const isProfesor = window.Auth && window.Auth.isProfesor && window.Auth.isProfesor();
+        const tipo = window.Auth && window.Auth.getProfesorTipo ? window.Auth.getProfesorTipo() : null;
+        const currentUser = window.Auth && window.Auth.getCurrentUser ? window.Auth.getCurrentUser() : null;
+        if (!isProfesor || !currentUser) return;
+        
+        // Lock type filter to professor's type
+        const typeSelect = document.getElementById('filterType');
+        if (typeSelect) {
+            typeSelect.innerHTML = '';
+            const opt = document.createElement('option');
+            opt.value = tipo;
+            opt.textContent = this.getEnvironmentTypeLabel(tipo);
+            typeSelect.appendChild(opt);
+            typeSelect.disabled = true;
+            // Persist into currentFilters so first search respects it
+            this.currentFilters.filterType = tipo;
+        }
+        
+        // Repopulate environment filter now that we know restrictions
+        this.populateEnvironmentFilter();
     }
     
     // Utility methods

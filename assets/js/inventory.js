@@ -20,6 +20,7 @@ class InventoryModule {
         this.renderInventory();
         this.renderMovements();
         this.updateProductSelect();
+        this.applyRoleRestrictions();
     }
 
     initializeUserInfo() {
@@ -28,18 +29,27 @@ class InventoryModule {
             if (user) {
                 const userNameElement = document.getElementById('currentUserName');
                 if (userNameElement) {
-                    userNameElement.textContent = user.nombre || user.username || 'Usuario';
+                    userNameElement.textContent = user.nombre || `${user.firstName} ${user.lastName}` || user.username || 'Usuario';
                 }
 
                 // Show/hide admin sections based on role
                 const adminSections = document.querySelectorAll('.admin-only');
                 adminSections.forEach(section => {
-                    if (user.rol === 'admin') {
+                    if (user.role === 'administrador') {
                         section.style.display = 'block';
                     } else {
                         section.style.display = 'none';
                     }
                 });
+
+                const roleEl = document.getElementById('currentUserRole');
+                if (roleEl) {
+                    roleEl.textContent =
+                        user.role === 'administrador' ? 'Administrador' :
+                        user.role === 'jefe_area' ? 'Jefe de Área' :
+                        user.role === 'profesor_animal' ? 'Profesor - Animal' :
+                        user.role === 'profesor_vegetal' ? 'Profesor - Vegetal' : (user.rol || 'Usuario');
+                }
             }
         }
     }
@@ -552,6 +562,37 @@ class InventoryModule {
             "'": '&#039;'
         };
         return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    applyRoleRestrictions() {
+        if (!window.Auth) return;
+        const user = window.Auth.getCurrentUser();
+        if (!user) return;
+        // Professors cannot access inventory
+        if (window.Auth.isProfesor()) {
+            window.location.href = 'dashboard.html';
+            return;
+        }
+        // Jefe de Área: view-only, disable actions
+        if (window.Auth.isJefeArea()) {
+            // Disable movement form fields & submit
+            const inputs = document.querySelectorAll('#stockMovementForm input, #stockMovementForm select, #stockMovementForm textarea');
+            inputs.forEach(el => el.disabled = true);
+            const movementSubmit = document.querySelector('#stockMovementForm button[type="submit"]');
+            if (movementSubmit) movementSubmit.disabled = true;
+            // Disable add product button and form fields
+            const addProductBtn = document.getElementById('addProductBtn');
+            if (addProductBtn) addProductBtn.disabled = true;
+            const addProductInputs = document.querySelectorAll('#addProductForm input, #addProductForm select, #addProductForm textarea');
+            addProductInputs.forEach(el => el.disabled = true);
+            const addProductSubmit = document.querySelector('#addProductForm button[type="submit"]');
+            if (addProductSubmit) addProductSubmit.disabled = true;
+            // Disable edit/delete product buttons
+            const editButtons = document.querySelectorAll('.edit-product-btn');
+            const deleteButtons = document.querySelectorAll('.delete-product-btn');
+            editButtons.forEach(b => b.disabled = true);
+            deleteButtons.forEach(b => b.disabled = true);
+        }
     }
 }
 

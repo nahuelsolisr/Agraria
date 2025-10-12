@@ -53,12 +53,12 @@ class AuthSystem {
             },
             {
                 id: 2,
-                username: 'profesor1',
-                password: 'profesor123',
-                email: 'profesor1@sistemaagraria.com',
-                firstName: 'Juan',
-                lastName: 'Pérez',
-                role: 'estandar',
+                username: 'jefe',
+                password: 'jefe123',
+                email: 'jefe.area@sistemaagraria.com',
+                firstName: 'Jefe',
+                lastName: 'Área',
+                role: 'jefe_area',
                 securityQuestion: '¿En qué ciudad naciste?',
                 securityAnswer: 'buenos aires',
                 active: true,
@@ -66,17 +66,30 @@ class AuthSystem {
             },
             {
                 id: 3,
-                username: 'profesor2',
-                password: 'profesor123',
-                email: 'profesor2@sistemaagraria.com',
-                firstName: 'María',
-                lastName: 'González',
-                role: 'estandar',
+                username: 'prof.animal',
+                password: 'prof123',
+                email: 'prof.animal@sistemaagraria.com',
+                firstName: 'Ana',
+                lastName: 'Martínez',
+                role: 'profesor_animal',
                 securityQuestion: '¿Cuál es tu color favorito?',
                 securityAnswer: 'azul',
                 active: true,
                 createdAt: new Date().toISOString()
-            }
+            },
+            {
+                id: 4,
+                username: 'prof.vegetal',
+                password: 'prof123',
+                email: 'prof.vegetal@sistemaagraria.com',
+                firstName: 'María',
+                lastName: 'González',
+                role: 'profesor_vegetal',
+                securityQuestion: '¿Cuál es tu comida favorita?',
+                securityAnswer: 'milanesa',
+                active: true,
+                createdAt: new Date().toISOString()
+            },
         ];
 
         this.saveUsers(defaultUsers);
@@ -373,6 +386,19 @@ class AuthSystem {
 
     isAdmin() {
         return this.hasRole('administrador');
+    }
+
+    isJefeArea() {
+        return this.hasRole('jefe_area');
+    }
+
+    isProfesor() {
+        return this.currentUser && (this.currentUser.role === 'profesor_animal' || this.currentUser.role === 'profesor_vegetal');
+    }
+
+    getProfesorTipo() {
+        if (!this.isProfesor()) return null;
+        return this.currentUser.role === 'profesor_animal' ? 'animal' : 'vegetal';
     }
 
     // ===== ROUTE PROTECTION =====
