@@ -10,7 +10,7 @@ class AuthSystem {
     init() {
         // Check for existing session on page load
         this.checkSession();
-        
+
         // Initialize login form if present
         const loginForm = document.getElementById('loginForm');
         if (loginForm) {
@@ -108,7 +108,7 @@ class AuthSystem {
             try {
                 const sessionData = JSON.parse(session);
                 const user = this.users.find(u => u.id === sessionData.userId);
-                
+
                 if (user && user.active && this.isSessionValid(sessionData)) {
                     this.currentUser = user;
                     this.redirectToDashboard();
@@ -125,7 +125,7 @@ class AuthSystem {
         const now = new Date().getTime();
         const sessionTime = new Date(sessionData.timestamp).getTime();
         const maxAge = 24 * 60 * 60 * 1000; // 24 hours
-        
+
         return (now - sessionTime) < maxAge;
     }
 
@@ -178,8 +178,8 @@ class AuthSystem {
             await new Promise(resolve => setTimeout(resolve, 1000));
 
             // Find user
-            const user = this.users.find(u => 
-                u.username.toLowerCase() === username.toLowerCase() && 
+            const user = this.users.find(u =>
+                u.username.toLowerCase() === username.toLowerCase() &&
                 u.password === password &&
                 u.active
             );
@@ -187,7 +187,7 @@ class AuthSystem {
             if (user) {
                 this.createSession(user, rememberMe);
                 Components.showAlert('Inicio de sesión exitoso', 'success', 2000);
-                
+
                 setTimeout(() => {
                     this.redirectToDashboard();
                 }, 1000);
@@ -353,7 +353,7 @@ class AuthSystem {
     }
 
     // ===== NAVIGATION =====
-  redirectToDashboard() {
+    redirectToDashboard() {
         const path = window.location.pathname;
         const last = path.split('/').pop().toLowerCase();
         const isIndex = last === '' || last === 'index.html';
@@ -427,5 +427,3 @@ const Auth = new AuthSystem();
 
 // Export for use in other modules
 window.Auth = Auth;
-
-

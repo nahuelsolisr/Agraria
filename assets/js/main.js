@@ -96,9 +96,9 @@ class SistemaAgraria {
 
         // Close mobile menu when clicking outside
         document.addEventListener('click', (e) => {
-            if (window.innerWidth <= 1024 && 
-                !sidebar.contains(e.target) && 
-                !mobileToggle.contains(e.target)) {
+            const clickOutsideSidebar = !sidebar.contains(e.target);
+            const clickOutsideToggle = !mobileToggle || !mobileToggle.contains(e.target);
+            if (window.innerWidth <= 1024 && clickOutsideSidebar && clickOutsideToggle) {
                 sidebar.classList.remove('open');
             }
         });
