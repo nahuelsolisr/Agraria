@@ -353,9 +353,11 @@ class AuthSystem {
     }
 
     // ===== NAVIGATION =====
-   redirectToDashboard() {
-        const path = window.location.pathname.toLowerCase();
-        if (!path.endsWith('/dashboard.html')) {
+  redirectToDashboard() {
+        const path = window.location.pathname;
+        const last = path.split('/').pop().toLowerCase();
+        const isIndex = last === '' || last === 'index.html';
+        if (isIndex) {
             window.location.href = 'dashboard.html';
         }
     }
@@ -425,4 +427,5 @@ const Auth = new AuthSystem();
 
 // Export for use in other modules
 window.Auth = Auth;
+
 
